@@ -23,7 +23,7 @@ namespace UWP_Mastermind
             this.Orientation = Orientation.Horizontal;
             this.Padding = new Thickness(5);
             Ellipse peg;
-            for(int i = 0; i < numPegs; i++)
+            for(int i = 1; i <= numPegs; i++)
             {
                 peg = new Ellipse();
                 peg.Fill = new SolidColorBrush( Colors.DarkOrange);

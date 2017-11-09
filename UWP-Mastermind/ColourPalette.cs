@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,9 +15,12 @@ namespace UWP_Mastermind
     public class ColourPalette : StackPanel
     {
         List<SolidColorBrush> colorList;
+        MainPage _mainPage;
 
         public ColourPalette()
         {
+            //this._mainPage = mainPage;
+
             this.colorList = createColourList();
             this.Orientation = Orientation.Vertical;
 
@@ -56,9 +60,27 @@ namespace UWP_Mastermind
             Ellipse tapped;
             tapped = (Ellipse)sender;
 
-
             Rectangle rect = FindName("rect") as Rectangle;
             rect.Fill = tapped.Fill;
+
+            // get current_turn from MainPage, get currentPeg from mainPage            
+            // get the peg with name "turnXpegY"
+
+            int currentTurn = MainPage.current_turn;
+            int currentPeg = MainPage.current_peg;
+
+            string pegName = "turn" + currentTurn + "peg" + currentPeg;
+            Debug.WriteLine(pegName);
+            Ellipse elCurrentTurnPeg = FindName(pegName) as Ellipse;
+
+            //if(elCurrentTurnPeg == null)
+            //{
+            //    throw new Exception();
+            //}
+
+            elCurrentTurnPeg.Fill = tapped.Fill;
+
+
         }
 
         private List<SolidColorBrush> createColourList()

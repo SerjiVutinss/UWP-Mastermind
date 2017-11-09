@@ -23,9 +23,15 @@ namespace UWP_Mastermind
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        public static int current_turn;
+        public static int current_peg;
+
         public MainPage()
         {
             this.InitializeComponent();
+
+            current_turn = 1;
+            current_peg = 1;
 
             BuildTheBoard();
         }
@@ -50,9 +56,9 @@ namespace UWP_Mastermind
 
             this.boardGrid.Children.Add(solution);
 
-            for(int i = 0; i < 10; i++)
+            for (int i = 10; i >= 1; i--)
             {
-                spTurns.Children.Add(new TurnContainer(12));
+                spTurns.Children.Add(new TurnContainer(i));
             }
 
 
@@ -69,5 +75,15 @@ namespace UWP_Mastermind
             // for each turn (numTurns), add a turn container to spTurns - decrementing loop
             // add each turn container to the stackpanel
         }
+
+        //public int GetTurn()
+        //{
+        //    return this.current_turn;
+        //}
+
+        //public int GetPeg()
+        //{
+        //    return this.current_peg;
+        //}
     }
 }
