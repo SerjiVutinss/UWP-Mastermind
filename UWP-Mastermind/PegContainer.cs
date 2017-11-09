@@ -17,8 +17,11 @@ namespace UWP_Mastermind
 
         public PegContainer(StackPanel parent, int numPegs)
         {
+            this.BorderBrush = new SolidColorBrush(Colors.Black);
+            this.BorderThickness = new Thickness(1);
+
             this.Orientation = Orientation.Horizontal;
-            this.Padding = new Thickness(2);
+            this.Padding = new Thickness(5);
             Ellipse peg;
             for(int i = 0; i < numPegs; i++)
             {

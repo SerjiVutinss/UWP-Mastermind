@@ -40,10 +40,10 @@ namespace UWP_Mastermind
             StackPanel spTurns = new StackPanel();
             spTurns.SetValue(Grid.ColumnProperty, 0);
             spTurns.SetValue(Grid.RowProperty, 1);
-            spTurns.SetValue(Grid.ColumnSpanProperty, 2);
+            spTurns.SetValue(Grid.ColumnSpanProperty, 1);
 
             PegContainer solution = new PegContainer(spTurns, 4);
-            solution.SetValue(Grid.ColumnProperty, 1);
+            solution.SetValue(Grid.ColumnProperty, 0);
             solution.SetValue(Grid.RowProperty, 0);
             solution.HorizontalAlignment = HorizontalAlignment.Right;
 
@@ -59,6 +59,12 @@ namespace UWP_Mastermind
             this.boardGrid.Background = new SolidColorBrush(Colors.Blue);
 
             this.boardGrid.Children.Add(spTurns);
+
+            ColourPalette cp = new ColourPalette();
+            cp.Name = "colourPallette";
+            cp.SetValue(Grid.ColumnProperty, 1);
+            cp.SetValue(Grid.RowProperty, 1);
+            this.boardGrid.Children.Add(cp);
 
             // for each turn (numTurns), add a turn container to spTurns - decrementing loop
             // add each turn container to the stackpanel

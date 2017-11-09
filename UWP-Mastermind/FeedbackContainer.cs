@@ -20,6 +20,9 @@ namespace UWP_Mastermind
         {
             int ellipse_size = 25;
 
+            this.BorderBrush = new SolidColorBrush(Colors.Black);
+            this.BorderThickness = new Thickness(1);
+
             // grid defs
             this.ColumnDefinitions.Add(new ColumnDefinition());
             this.ColumnDefinitions.Add(new ColumnDefinition());
