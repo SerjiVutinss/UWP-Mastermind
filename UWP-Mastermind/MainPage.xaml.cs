@@ -23,25 +23,28 @@ namespace UWP_Mastermind
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        public static int current_turn;
-        public static int current_peg;
+        public static int numPegsPerTurn = 4;
+        public static int current_turn = 1;
+        public static int current_peg = 1;
+
+        public static List<SolidColorBrush> _colorList = new List<SolidColorBrush>();
 
         public MainPage()
         {
             this.InitializeComponent();
+            _colorList = CreateColourList();
 
-            current_turn = 1;
-            current_peg = 1;
+            StartGame();
+        }
 
+        private void StartGame()
+        {
             BuildTheBoard();
+            SetSolution();
         }
 
         private void BuildTheBoard()
         {
-            // create a grid
-            // add the solution to grid 0,1
-
-
             // add stackpanel to grid 1, 0 - colspan 2 - name it "spTurns"
             StackPanel spTurns = new StackPanel();
             spTurns.SetValue(Grid.ColumnProperty, 0);
@@ -61,7 +64,6 @@ namespace UWP_Mastermind
                 spTurns.Children.Add(new TurnContainer(i));
             }
 
-
             this.boardGrid.Background = new SolidColorBrush(Colors.Blue);
 
             this.boardGrid.Children.Add(spTurns);
@@ -76,14 +78,32 @@ namespace UWP_Mastermind
             // add each turn container to the stackpanel
         }
 
-        //public int GetTurn()
-        //{
-        //    return this.current_turn;
-        //}
+        private void SetSolution()
+        {
 
-        //public int GetPeg()
-        //{
-        //    return this.current_peg;
-        //}
+        }
+
+        private List<SolidColorBrush> CreateColourList()
+        {
+            List<SolidColorBrush> colorList = new List<SolidColorBrush>();
+
+            SolidColorBrush c1 = new SolidColorBrush(Colors.White);
+            SolidColorBrush c2 = new SolidColorBrush(Colors.Green);
+            SolidColorBrush c3 = new SolidColorBrush(Colors.Red);
+            SolidColorBrush c4 = new SolidColorBrush(Colors.Yellow);
+            SolidColorBrush c5 = new SolidColorBrush(Colors.Purple);
+            SolidColorBrush c6 = new SolidColorBrush(Colors.Gold);
+            SolidColorBrush c7 = new SolidColorBrush(Colors.Silver);
+
+            colorList.Add(c1);
+            colorList.Add(c2);
+            colorList.Add(c3);
+            colorList.Add(c4);
+            colorList.Add(c5);
+            colorList.Add(c6);
+            colorList.Add(c7);
+
+            return colorList;
+        }
     }
 }

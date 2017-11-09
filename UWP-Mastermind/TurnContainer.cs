@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace UWP_Mastermind
 {
@@ -21,6 +23,7 @@ namespace UWP_Mastermind
         {
             this.turnNumber = turnNumber;
             this.Padding = new Thickness(5);
+            this.Background = new SolidColorBrush(Colors.AntiqueWhite);
 
             this.Orientation = Orientation.Horizontal;
             this.HorizontalAlignment = HorizontalAlignment.Right;
