@@ -7,7 +7,22 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid x:Name="rootGrid" Width="600" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid x:Name="boardGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"></ColumnDefinition>
+                <ColumnDefinition Width="6*"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"></RowDefinition>
+                <RowDefinition Height="6*"></RowDefinition>
+            </Grid.RowDefinitions>
 
+            <Border Grid.Column="0" Background="Beige"></Border>
+            <Border Grid.Column="1" Background="Orange"></Border>
+            <Border Grid.Column="0" Grid.Row="1" Background="Salmon"></Border>
+            <Border Grid.Column="1" Grid.Row="1" Background="AliceBlue"></Border>
+            
+        </Grid>
     </Grid>
 </Page>
