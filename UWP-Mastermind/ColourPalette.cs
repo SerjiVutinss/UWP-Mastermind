@@ -12,10 +12,16 @@ using Windows.UI.Xaml.Shapes;
 
 namespace UWP_Mastermind
 {
-    public class ColourPalette : StackPanel
+    // this class will control the majority of the game logic
+    // its constructor takes the current_turn and current_peg as 
+    // parameters, which are used to set the starting turn
+    public class ControlPanel : StackPanel
     {
-        public ColourPalette()
+        MainPage _mainPage;
+
+        public ControlPanel(MainPage mainPage, int current_turn, int current_peg)
         {
+            this._mainPage = mainPage;
 
             // layout and colours
             this.Orientation = Orientation.Vertical;
@@ -38,70 +44,59 @@ namespace UWP_Mastermind
                 el.Tapped += El_Tapped; ;
                 this.Children.Add(el);
             }
-
-            //Rectangle rect = new Rectangle();
-            //rect.Fill = new SolidColorBrush(Colors.Black);
-            //rect.Height = ellipse_size;
-            //rect.Width = ellipse_size;
-            //rect.Name = "rect";
-            //this.Children.Add(rect);
         }
 
+        // event handler which fires when a colour is tapped
+        // because of the game logic, the majority of the time, 
+        // this is a move, except for the last peg in the last turn, 
+        // which is (game over?)
         private void El_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
             Ellipse tapped;
             tapped = (Ellipse)sender;
 
-            // // Diaply the colour in the rect
-            //Rectangle rect = FindName("rect") as Rectangle;
-            //rect.Fill = tapped.Fill;
-
-            Ellipse elCurrentTurnPeg = GetNextPeg();
-
+            // get the current game state values from the MainPage
+            int currentTurn = MainPage.current_turn;
+            int currentPeg = MainPage.current_peg;
+            // retrieve the peg which matches these values
+            Ellipse elCurrentTurnPeg = GetPeg(currentTurn, currentPeg);
             // set the peg colour to the tapped colour
             elCurrentTurnPeg.Fill = tapped.Fill;
             elCurrentTurnPeg.Opacity = 100;
 
             // go to the next move
             NextMove();
-            elCurrentTurnPeg = null;
-            // highlight the next peg
-            elCurrentTurnPeg = GetNextPeg();
-            Grid grid = (Grid)elCurrentTurnPeg.Parent;
-
-            Ellipse nextMove = new Ellipse();
-            nextMove.Height = 10;
-            nextMove.Width = 10;
-            nextMove.Fill = new SolidColorBrush(Colors.Black);
-
-            grid.Children.Add(nextMove);
         }
 
-        private Ellipse GetNextPeg()
+        // get a peg with name turnXpegY
+        private Ellipse GetPeg(int numTurn, int numPeg)
         {
-            // get turn values
-            int currentTurn = MainPage.current_turn;
-            int currentPeg = MainPage.current_peg;
-
             // try to find the peg
-            string pegName = "turn" + currentTurn + "peg" + currentPeg;
+            string pegName = "turn" + numTurn + "peg" + numPeg;
             Ellipse peg = FindName(pegName) as Ellipse;
 
             return peg;
         }
 
+        // increment the move - i.e. peg# and/or turn# and 
+        // add a move marker to it
         private void NextMove()
         {
-            // check if it is the last peg
+            // check if it is the last peg in the turn
             if (MainPage.current_peg == MainPage.numPegsPerTurn)
             {
+                // if so, reset the peg# to 1 
                 MainPage.current_peg = 1;
+                // and increment the turn#
                 MainPage.current_turn += 1;
             }
             else
             {
                 MainPage.current_peg += 1;
             }
+
+            // add a move marker to the next move
+            this._mainPage.AddNextMovemarker(MainPage.current_turn, MainPage.current_peg);
         }
     }
 }
