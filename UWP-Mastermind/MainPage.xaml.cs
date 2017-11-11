@@ -125,6 +125,7 @@ namespace UWP_Mastermind
 
         }
 
+        // generate a new solution and add it to the PegContainer solution object
         private void SetSolution()
         {
             // 
@@ -158,6 +159,13 @@ namespace UWP_Mastermind
             }
         }
 
+        // at the end of a turn, check the turn pegs against the solution pegs
+        public void CalculateTurnEnd()
+        {
+            // TODO: implement
+        }
+
+        // create a static list of colours
         private List<SolidColorBrush> CreateColourList()
         {
             List<SolidColorBrush> colorList = new List<SolidColorBrush>();
