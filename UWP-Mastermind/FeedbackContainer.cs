@@ -36,7 +36,7 @@ namespace UWP_Mastermind
             el.SetValue(Grid.RowProperty, 0);
             el.Height = ellipse_size;
             el.Width = ellipse_size;
-            el.Fill = new SolidColorBrush(Colors.Pink);
+            el.Fill = MainPage.BORDER_BG;
             el.Name = parent.Name + "fb1";
             this.Children.Add(el);
 
@@ -45,7 +45,7 @@ namespace UWP_Mastermind
             el.SetValue(Grid.RowProperty, 0);
             el.Height = ellipse_size;
             el.Width = ellipse_size;
-            el.Fill = new SolidColorBrush(Colors.Pink);
+            el.Fill = MainPage.BORDER_BG;
             el.Name = parent.Name + "fb2";
             this.Children.Add(el);
 
@@ -54,7 +54,7 @@ namespace UWP_Mastermind
             el.SetValue(Grid.RowProperty, 1);
             el.Height = ellipse_size;
             el.Width = ellipse_size;
-            el.Fill = new SolidColorBrush(Colors.Pink);
+            el.Fill = MainPage.BORDER_BG;
             el.Name = parent.Name + "fb3";
             this.Children.Add(el);
 
@@ -63,7 +63,7 @@ namespace UWP_Mastermind
             el.SetValue(Grid.RowProperty, 1);
             el.Height = ellipse_size;
             el.Width = ellipse_size;
-            el.Fill = new SolidColorBrush(Colors.Pink);
+            el.Fill = MainPage.BORDER_BG;
             el.Name = parent.Name + "fb4";
             this.Children.Add(el);
         }

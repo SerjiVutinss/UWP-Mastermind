@@ -22,7 +22,7 @@ namespace UWP_Mastermind
         public TurnContainer(int turnNumber)
         {
             this.turnNumber = turnNumber;
-            this.Padding = new Thickness(5);
+            this.Padding = new Thickness(MainPage.PEG_CONTAINER_PADDING);
 
             this.BorderBrush = MainPage.BORDER_BG;
             this.BorderThickness = new Thickness(2);

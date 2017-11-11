@@ -33,15 +33,14 @@ namespace UWP_Mastermind
             //this.BorderThickness = new Thickness(1);
 
             Ellipse el;
-            int ellipse_size = 50;
             foreach (SolidColorBrush c in MainPage._colorList)
             {
                 el = new Ellipse();
                 // TODO: check
                 el.Name = "color" + (MainPage._colorList.IndexOf(c) + 1);
                 el.Fill = c;
-                el.Height = ellipse_size;
-                el.Width = ellipse_size;
+                el.Height = MainPage.PEG_LOCATION_SIZE;
+                el.Width = MainPage.PEG_LOCATION_SIZE;
                 el.Margin = new Thickness(10);
                 el.Tapped += El_Tapped; ;
                 this.Children.Add(el);
@@ -61,25 +60,41 @@ namespace UWP_Mastermind
             int currentTurn = MainPage.current_turn;
             int currentPeg = MainPage.current_peg;
             // retrieve the peg which matches these values
-            Ellipse elCurrentTurnPeg = GetPeg(currentTurn, currentPeg);
+            Ellipse elCurrentTurnPegLocation = GetPegLocation(currentTurn, currentPeg);
             // set the peg colour to the tapped colour
-            elCurrentTurnPeg.Fill = tapped.Fill;
-            elCurrentTurnPeg.Opacity = 100;
+            //elCurrentTurnPegLocation.Fill = tapped.Fill;
+            elCurrentTurnPegLocation.Opacity = 100;
 
+            // add a new ellipse into the peg location
+            Ellipse elMove = new Ellipse();
+            elMove.Height = MainPage.PEG_SIZE;
+            elMove.Width = MainPage.PEG_SIZE;
+            //elMove.SetValue(Canvas.ZIndexProperty, 100);
+            elMove.Fill = tapped.Fill;
+            elMove.SetValue(
+                Grid.ColumnProperty,
+                elCurrentTurnPegLocation.GetValue(Grid.ColumnProperty)
+                );
+            elMove.SetValue(
+                Grid.RowProperty,
+                elCurrentTurnPegLocation.GetValue(Grid.RowProperty)
+                );
+            PegContainer pegContainer = (PegContainer)elCurrentTurnPegLocation.Parent;
+            pegContainer.Children.Add(elMove);
             // go to the next move
             this._mainPage.NextMove();
         }
 
         // get a peg with name turnXpegY
-        private Ellipse GetPeg(int numTurn, int numPeg)
+        private Ellipse GetPegLocation(int numTurn, int numPeg)
         {
             // try to find the peg
-            string pegName = "turn" + numTurn + "peg" + numPeg;
+            string pegName = "turn" + numTurn + "pegLocation" + numPeg;
             Ellipse peg = FindName(pegName) as Ellipse;
 
             return peg;
         }
 
-       
+
     }
 }

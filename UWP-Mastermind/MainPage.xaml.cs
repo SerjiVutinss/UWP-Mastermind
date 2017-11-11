@@ -42,10 +42,11 @@ namespace UWP_Mastermind
         /// 
         // PegContainer display and layout values
         //static SolidColorBrush PEG_CONTAINER_COLOUR = new SolidColorBrush(Colors.Black);
-        public static double PEG_MARGIN_SIZE = PEG_SIZE / 25;
-        public static double PEG_CONTAINER_BORDER = PEG_SIZE / 50;
-        public static double PEG_CONTAINER_PADDING = PEG_SIZE / 10;
+        public static double PEG_MARGIN_SIZE = PEG_LOCATION_SIZE / 5;
+        public static double PEG_CONTAINER_BORDER = PEG_LOCATION_SIZE / 50;
+        public static double PEG_CONTAINER_PADDING = PEG_LOCATION_SIZE / 10;
 
+        public static double BORDER_THICKNESS = 2;
 
         // CONSTANTS
 
@@ -61,7 +62,10 @@ namespace UWP_Mastermind
         // PEGS - layout and display values
         public static readonly SolidColorBrush PEG_CONTAINER_COLOUR = new SolidColorBrush(Colors.Black);
         // - the size of each peg in the game
-        public static readonly double PEG_SIZE = 50;
+        public static readonly double PEG_LOCATION_SIZE = 50;
+        // the ratio of PEG_SIZE to PEG_LOCATION
+        public static readonly double PEG_SIZE = PEG_LOCATION_SIZE * 0.8;
+
         // the colour of each peg location before a move has been made
         public static readonly SolidColorBrush PEG_COLOUR = new SolidColorBrush(Colors.DarkOrange);
 
@@ -74,8 +78,10 @@ namespace UWP_Mastermind
 
 
         // END CONSTANTS
-        #endregion Globals and Constants
+        #endregion Globals and 
 
+        // used to store the solution
+        PegContainer solution;
 
         public MainPage()
         {
@@ -98,16 +104,22 @@ namespace UWP_Mastermind
 
             // generate a random solution
             SetSolution();
+            // hide the solution
+
+            PlaneProjection pp = new PlaneProjection();
+            pp.RotationX = -10;
+            //pp.CenterOfRotationY = 10;
+            this.boardGrid.Projection = pp;
         }
 
         private void BuildTheBoard()
         {
-            // set some colours on the boardGrid
-            Border brdr = new Border();
-            //brdr.Background = new SolidColorBrush(Colors.RosyBrown);
-            brdr.SetValue(Grid.ColumnProperty, 1);
-            brdr.SetValue(Grid.RowProperty, 0);
-            brdr.SetValue(Grid.RowSpanProperty, 2);
+            //// set some colours on the boardGrid
+            //Border brdr = new Border();
+            ////brdr.Background = new SolidColorBrush(Colors.RosyBrown);
+            //brdr.SetValue(Grid.ColumnProperty, 1);
+            //brdr.SetValue(Grid.RowProperty, 0);
+            //brdr.SetValue(Grid.RowSpanProperty, 2);
 
             this.boardGrid.Background = MAIN_BG;
 
@@ -120,24 +132,21 @@ namespace UWP_Mastermind
             // create the colution peg container
             // TODO: don't add the solution yet as it may need to be loaded from AppData
             // so create the solution in method SetSolution()
-            PegContainer solution = new PegContainer(spTurns, 4);
-            solution.Name = "solution";
-            solution.Background = SECONDARY_BG;
-            solution.SetValue(Grid.ColumnProperty, 0);
-            solution.SetValue(Grid.RowProperty, 0);
-            solution.HorizontalAlignment = HorizontalAlignment.Right;
-
-            solution.Padding = new Thickness(
+            this.solution = new PegContainer(spTurns, 4);
+            this.solution.Name = "solution";
+            this.solution.Background = SECONDARY_BG;
+            this.solution.SetValue(Grid.ColumnProperty, 0);
+            this.solution.SetValue(Grid.RowProperty, 0);
+            this.solution.HorizontalAlignment = HorizontalAlignment.Right;
+            this.solution.Padding = new Thickness(
                 75,
                 MainPage.PEG_CONTAINER_PADDING,
                 MainPage.PEG_CONTAINER_PADDING,
                 MainPage.PEG_CONTAINER_PADDING);
 
-            solution.BorderBrush = BORDER_BG;
-            solution.BorderThickness = new Thickness(2);
-
-
-            this.boardGrid.Children.Add(solution);
+            this.solution.BorderBrush = BORDER_BG;
+            this.solution.BorderThickness = new Thickness(BORDER_THICKNESS);
+            this.boardGrid.Children.Add(this.solution);
 
             // turn1 is at the bottom of the stack panel, so 
             // reverse the loop
@@ -186,7 +195,7 @@ namespace UWP_Mastermind
             nextMove.Name = "nextMoveMarker";
             nextMove.Height = 10;
             nextMove.Width = 10;
-            nextMove.Fill = new SolidColorBrush(Colors.Black);
+            nextMove.Fill = new SolidColorBrush(Colors.White);
 
             nextMove.SetValue(Grid.RowProperty, 1);
             nextMove.SetValue(Grid.ColumnProperty, numPeg - 1);
@@ -202,12 +211,23 @@ namespace UWP_Mastermind
             // for each number of pegs per turn,
             // add a random colour to the peg container named "solution"
             // name each peg solutionPeg + i
-
+            Ellipse solutionPegLocation;
+            Ellipse solutionPeg;
             // better to create a random object here and call .Next() multiple times
             Random rand = new Random();
-            Ellipse solutionPeg;
             for (int i = 1; i <= NUM_PEGS; i++)
             {
+                //this.solution = FindName("solution") as PegContainer;
+
+                // add the peg location
+                solutionPegLocation = new Ellipse();
+                solutionPegLocation.SetValue(Grid.ColumnProperty, i - 1);
+                solutionPegLocation.Height = PEG_LOCATION_SIZE;
+                solutionPegLocation.Width = PEG_LOCATION_SIZE;
+                solutionPegLocation.Fill = BORDER_BG;
+                this.solution.Children.Add(solutionPegLocation);
+
+                // add the actual peg with colour
                 solutionPeg = new Ellipse();
                 solutionPeg.Name = "solutionPeg" + i;
                 // generate a random number between 0 and the length of 
@@ -215,13 +235,12 @@ namespace UWP_Mastermind
                 int _randColourIndex = rand.Next(0, _colorList.Count);
                 solutionPeg.Fill = _colorList.ElementAt(_randColourIndex);
                 // TODO: should set constants here, for all pegs and containers created
-                solutionPeg.Height = 50;
-                solutionPeg.Width = 50;
-                PegContainer solutionContainer = FindName("solution") as PegContainer;
+                solutionPeg.Height = PEG_SIZE;
+                solutionPeg.Width = PEG_SIZE;
                 // set the grid location to (i - 1) since grid is zero-based
                 solutionPeg.SetValue(Grid.ColumnProperty, i - 1);
                 // add it to the PegContainer
-                solutionContainer.Children.Add(solutionPeg);
+                this.solution.Children.Add(solutionPeg);
             }
         }
 

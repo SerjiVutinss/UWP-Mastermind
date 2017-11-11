@@ -37,6 +37,7 @@ namespace UWP_Mastermind
             //this.BorderBrush = MainPage.PEG_CONTAINER_COLOUR;
             //this.BorderThickness = new Thickness(PEG_CONTAINER_BORDER);
             this.Padding = new Thickness(MainPage.PEG_CONTAINER_PADDING);
+            this.Margin = new Thickness(MainPage.PEG_CONTAINER_PADDING);
             this.Name = parent.Name + "pegs";
 
             // add a new row which, in the case of turns,
@@ -44,28 +45,32 @@ namespace UWP_Mastermind
             this.RowDefinitions.Add(new RowDefinition());
 
             // add an ellipse which will represent each peg
-            Ellipse peg;
+            Ellipse pegLocation;
             for (int i = 1; i <= numPegs; i++)
             {
                 // each peg will be placed in its own column,
                 // so add a new ColumnDefinition to the PegContainer
                 this.ColumnDefinitions.Add(new ColumnDefinition());
-                // build a new peg and set some values
-                peg = new Ellipse();
-                peg.Fill = MainPage.BORDER_BG;
-                peg.Margin = new Thickness(MainPage.PEG_MARGIN_SIZE);
-                peg.Height = MainPage.PEG_SIZE;
-                peg.Width = MainPage.PEG_SIZE;
-                // give it a name which is based on the parent.Name and peg#(i)
-                peg.Name = parent.Name + "peg" + i;
-                // as turn peg numbers are not zero-based and 
-                // column values are, decrement the peg number by 1
-                // and place in that column
-                peg.SetValue(Grid.RowProperty, 0);
-                peg.SetValue(Grid.ColumnProperty, i - 1);
+                // build a new peg using PegLocationWrapperClass
+
+                //peg = new Ellipse();
+                //peg.Fill = MainPage.BORDER_BG;
+                //peg.Margin = new Thickness(MainPage.PEG_MARGIN_SIZE);
+                //peg.Height = MainPage.PEG_LOCATION_SIZE;
+                //peg.Width = MainPage.PEG_LOCATION_SIZE;
+                //// give it a name which is based on the parent.Name and peg#(i)
+                //peg.Name = parent.Name + "pegLocation" + i;
+                //// as turn peg numbers are not zero-based and 
+                //// column values are, decrement the peg number by 1
+                //// and place in that column
+                //peg.SetValue(Grid.RowProperty, 0);
+                //peg.SetValue(Grid.ColumnProperty, i - 1);
+
+                PegLocationWrapper pegLocationWrapper = new PegLocationWrapper(parent, i);
+                pegLocation = pegLocationWrapper.pegLocation;
                 // add the element to the PegContainer (this) which 
                 // extends Grid
-                this.Children.Add(peg);
+                this.Children.Add(pegLocation);
             }
         }
     }
