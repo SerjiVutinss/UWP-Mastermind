@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -38,12 +39,15 @@ namespace UWP_Mastermind
             StartGame();
         }
 
+        // bunch of methods to start the game
         private void StartGame()
         {
+            // build the board and pegs
             BuildTheBoard();
+            // add the marker to show the next peg which will be populated
             AddNextMovemarker(current_turn, current_peg);
 
-
+            // generate a random solution
             SetSolution();
         }
 
@@ -55,7 +59,10 @@ namespace UWP_Mastermind
             spTurns.SetValue(Grid.RowProperty, 1);
             spTurns.SetValue(Grid.ColumnSpanProperty, 1);
 
+            // create the colution peg container
+            // TODO: don't add the solution yet as it may need to be loaded from AppData
             PegContainer solution = new PegContainer(spTurns, 4);
+            solution.Name = "solution";
             solution.SetValue(Grid.ColumnProperty, 0);
             solution.SetValue(Grid.RowProperty, 0);
             solution.HorizontalAlignment = HorizontalAlignment.Right;
@@ -120,20 +127,48 @@ namespace UWP_Mastermind
 
         private void SetSolution()
         {
+            // 
+            // for each number of pegs per turn,
+            // add a random colour to the peg container named "solution"
+            // name each peg solutionPeg + i
 
+            // better to create a random object here and call .Next() multiple times
+            Random rand = new Random(); 
+            Ellipse solutionPeg;
+            for (int i = 1; i <= numPegsPerTurn; i++)
+            {
+                solutionPeg = new Ellipse();
+                solutionPeg.Name = "solutionPeg" + i;
+
+                // generate a random number between 0 and the length of 
+                // _colourList, uppperbound is not included in random
+                int _randColourIndex = rand.Next(0, _colorList.Count);
+                Debug.WriteLine(_randColourIndex);
+                solutionPeg.Fill = _colorList.ElementAt(_randColourIndex);
+                // TODO: should set constants here, for all pegs and containers created
+                solutionPeg.Height = 50;
+                solutionPeg.Width = 50;
+                PegContainer solutionContainer = FindName("solution") as PegContainer;
+
+                // set the grid location to (i - 1)
+                solutionPeg.SetValue(Grid.ColumnProperty, i - 1);
+
+                // add it to the PegContainer
+                solutionContainer.Children.Add(solutionPeg);
+            }
         }
 
         private List<SolidColorBrush> CreateColourList()
         {
             List<SolidColorBrush> colorList = new List<SolidColorBrush>();
 
-            SolidColorBrush c1 = new SolidColorBrush(Colors.White);
+            SolidColorBrush c1 = new SolidColorBrush(Colors.OliveDrab);
             SolidColorBrush c2 = new SolidColorBrush(Colors.Green);
             SolidColorBrush c3 = new SolidColorBrush(Colors.Red);
             SolidColorBrush c4 = new SolidColorBrush(Colors.Yellow);
             SolidColorBrush c5 = new SolidColorBrush(Colors.Purple);
-            SolidColorBrush c6 = new SolidColorBrush(Colors.Gold);
-            SolidColorBrush c7 = new SolidColorBrush(Colors.Silver);
+            SolidColorBrush c6 = new SolidColorBrush(Colors.BlueViolet);
+            SolidColorBrush c7 = new SolidColorBrush(Colors.OrangeRed);
 
             colorList.Add(c1);
             colorList.Add(c2);
