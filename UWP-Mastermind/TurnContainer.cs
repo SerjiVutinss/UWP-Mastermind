@@ -23,7 +23,11 @@ namespace UWP_Mastermind
         {
             this.turnNumber = turnNumber;
             this.Padding = new Thickness(5);
-            this.Background = new SolidColorBrush(Colors.AntiqueWhite);
+
+            this.BorderBrush = MainPage.BORDER_BG;
+            this.BorderThickness = new Thickness(2);
+
+            this.Background = MainPage.SECONDARY_BG;
 
             this.Orientation = Orientation.Horizontal;
             this.HorizontalAlignment = HorizontalAlignment.Right;

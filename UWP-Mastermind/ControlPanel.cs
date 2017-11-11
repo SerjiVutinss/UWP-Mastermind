@@ -17,6 +17,8 @@ namespace UWP_Mastermind
     // parameters, which are used to set the starting turn
     public class ControlPanel : StackPanel
     {
+        // reference to the MainPage, which is used for 
+        // accessing the game methods
         MainPage _mainPage;
 
         public ControlPanel(MainPage mainPage, int current_turn, int current_peg)
@@ -26,9 +28,9 @@ namespace UWP_Mastermind
             // layout and colours
             this.Orientation = Orientation.Vertical;
             this.Padding = new Thickness(5);
-            this.Background = new SolidColorBrush(Colors.DarkBlue);
-            this.BorderBrush = new SolidColorBrush(Colors.Black);
-            this.BorderThickness = new Thickness(1);
+            //this.Background = MainPage.SECONDARY_BG;
+            //this.BorderBrush = new SolidColorBrush(Colors.Black);
+            //this.BorderThickness = new Thickness(1);
 
             Ellipse el;
             int ellipse_size = 50;
@@ -65,7 +67,7 @@ namespace UWP_Mastermind
             elCurrentTurnPeg.Opacity = 100;
 
             // go to the next move
-            NextMove();
+            this._mainPage.NextMove();
         }
 
         // get a peg with name turnXpegY
@@ -78,25 +80,6 @@ namespace UWP_Mastermind
             return peg;
         }
 
-        // increment the move - i.e. peg# and/or turn# and 
-        // add a move marker to it
-        private void NextMove()
-        {
-            // check if it is the last peg in the turn
-            if (MainPage.current_peg == MainPage.numPegsPerTurn)
-            {
-                // if so, reset the peg# to 1 
-                MainPage.current_peg = 1;
-                // and increment the turn#
-                MainPage.current_turn += 1;
-            }
-            else
-            {
-                MainPage.current_peg += 1;
-            }
-
-            // add a move marker to the next move
-            this._mainPage.AddNextMovemarker(MainPage.current_turn, MainPage.current_peg);
-        }
+       
     }
 }
