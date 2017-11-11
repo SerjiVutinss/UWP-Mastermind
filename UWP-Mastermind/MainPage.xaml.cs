@@ -66,6 +66,10 @@ namespace UWP_Mastermind
         // the ratio of PEG_SIZE to PEG_LOCATION
         public static readonly double PEG_SIZE = PEG_LOCATION_SIZE * 0.8;
 
+        // feedback peg size
+        public static readonly double FEEDBACK_PEG_LOCATION_SIZE = PEG_LOCATION_SIZE / 2;
+        public static readonly double FEEDBACK_PEG_SIZE = PEG_SIZE / 2;
+
         // the colour of each peg location before a move has been made
         public static readonly SolidColorBrush PEG_COLOUR = new SolidColorBrush(Colors.DarkOrange);
 
@@ -297,16 +301,19 @@ namespace UWP_Mastermind
                     Ellipse peg = (Ellipse)item;
                     if (peg.Name.StartsWith(queryString))
                     {
-                        Debug.WriteLine("Found peg: " + peg.Name);
-                        // add the element to the list
-                        turnPegs.Add(peg);
+                        //Debug.WriteLine);
+                        turnPegs.Add(new Ellipse
+                        {
+                            Fill = peg.Fill
+                        });
                     }
                 }
             }
             if (turnPegs.Count == solutionList.Count)
             {
                 // list is the correct size
-                Debug.WriteLine("turn " + current_turn + " over!");
+                Debug.WriteLine("Checking turn " + current_turn + " values!");
+                CompareLists(turnPegs);
             }
             else
             {
@@ -317,6 +324,84 @@ namespace UWP_Mastermind
 
             // if it is the last turn
             // TODO: Game Over?
+        }
+
+        private void CompareLists(List<Ellipse> turnPegs)
+        {
+            // use this to keep track of which location to add the next peg
+            // to the feedback container
+            int pegToAdd = 1;
+
+            // first check for elements which match both position and colour
+            foreach (Ellipse turnPeg in turnPegs)
+            {
+                // check whether the element has the same colour as
+                // the corresponding solutionPeg
+
+                // get the list index of the peg
+                int i = turnPegs.IndexOf(turnPeg);
+                // get the corresponding element from solutionList
+                Ellipse solutionPeg = solutionList.ElementAt(i);
+                // compare the Fill properties
+                if (turnPeg.Fill == solutionPeg.Fill)
+                {
+                    // elements are the same colour and position:
+                    // add a black marker to the feedback container and
+                    // so that it is not checked again in the list
+                    AddFeedBackMarker(Colors.Black, pegToAdd);
+                    // then set the turnPeg Fill to null
+                    turnPeg.Fill = null;
+                    // and increment the pegsAdded
+                    pegToAdd++;
+                }
+            }
+            // black feedback markers have been added and 
+            // colours set to null for any macthing elements,
+            // now add the white ones
+
+            // keep tracvk of the colours added so that one is not added twice?
+            List<Color> addedColoursList = new List<Color>();
+            foreach (Ellipse solutionPeg in solutionList)
+            {
+                foreach (Ellipse turnPeg in turnPegs)
+                {
+                    if (turnPeg.Fill == solutionPeg.Fill)
+                    {
+                        AddFeedBackMarker(Colors.White, pegToAdd);
+                        // set to null so it won't be checked positive again
+                        turnPeg.Fill = null;
+                        pegToAdd++;
+                    }
+                }
+            }
+        }
+
+        private bool CompareListElement(Ellipse turnPeg, Ellipse solutionPeg)
+        {
+            return false;
+        }
+
+        // feedback containers are named turnXfeedback
+        private void AddFeedBackMarker(Color colour, int pegNumber)
+        {
+            Debug.WriteLine("Adding feedbackpeg!!");
+            // set a string to search for
+            string qryString = "turn" + current_turn + "feedbackpeg" + pegNumber;
+            // add a peg to the feedback container
+            Ellipse fbPegLocation = FindName(qryString) as Ellipse;
+            // now add a new Peg to the same parent and grid positions
+
+            // feedback pegs will (should) be called turnXfeedbackpegYpegY
+            PegWrapper pegWrapper = new PegWrapper(
+                qryString + "peg",
+                pegNumber,
+                new SolidColorBrush(colour),
+                FEEDBACK_PEG_SIZE
+                );
+            FeedbackContainer fbContainer = FindName("turn" + current_turn + "feedback") as FeedbackContainer;
+            Debug.WriteLine(fbContainer.Name);
+            fbContainer.Children.Add(pegWrapper.Peg);
+
         }
 
         // create a static list of colours

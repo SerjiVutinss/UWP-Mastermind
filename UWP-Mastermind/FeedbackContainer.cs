@@ -30,41 +30,43 @@ namespace UWP_Mastermind
             this.RowDefinitions.Add(new RowDefinition());
             this.Padding = new Thickness(5);
 
+            this.Name = parent.Name + "feedback";
+
             Ellipse el;
             el = new Ellipse();
             el.SetValue(Grid.ColumnProperty, 0);
             el.SetValue(Grid.RowProperty, 0);
-            el.Height = ellipse_size;
-            el.Width = ellipse_size;
+            el.Height = MainPage.FEEDBACK_PEG_LOCATION_SIZE;
+            el.Width = MainPage.FEEDBACK_PEG_LOCATION_SIZE;
             el.Fill = MainPage.BORDER_BG;
-            el.Name = parent.Name + "fb1";
+            el.Name = parent.Name + "peg1";
             this.Children.Add(el);
 
             el = new Ellipse();
             el.SetValue(Grid.ColumnProperty, 1);
             el.SetValue(Grid.RowProperty, 0);
-            el.Height = ellipse_size;
-            el.Width = ellipse_size;
+            el.Height = MainPage.FEEDBACK_PEG_LOCATION_SIZE;
+            el.Width = MainPage.FEEDBACK_PEG_LOCATION_SIZE;
             el.Fill = MainPage.BORDER_BG;
-            el.Name = parent.Name + "fb2";
+            el.Name = parent.Name + "peg2";
             this.Children.Add(el);
 
             el = new Ellipse();
             el.SetValue(Grid.ColumnProperty, 0);
             el.SetValue(Grid.RowProperty, 1);
-            el.Height = ellipse_size;
-            el.Width = ellipse_size;
+            el.Height = MainPage.FEEDBACK_PEG_LOCATION_SIZE;
+            el.Width = MainPage.FEEDBACK_PEG_LOCATION_SIZE;
             el.Fill = MainPage.BORDER_BG;
-            el.Name = parent.Name + "fb3";
+            el.Name = parent.Name + "peg3";
             this.Children.Add(el);
 
             el = new Ellipse();
             el.SetValue(Grid.ColumnProperty, 1);
             el.SetValue(Grid.RowProperty, 1);
-            el.Height = ellipse_size;
-            el.Width = ellipse_size;
+            el.Height = MainPage.FEEDBACK_PEG_LOCATION_SIZE;
+            el.Width = MainPage.FEEDBACK_PEG_LOCATION_SIZE;
             el.Fill = MainPage.BORDER_BG;
-            el.Name = parent.Name + "fb4";
+            el.Name = parent.Name + "peg4";
             this.Children.Add(el);
         }
     }
