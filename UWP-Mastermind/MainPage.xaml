@@ -15,18 +15,8 @@
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"></RowDefinition>
-                <RowDefinition Height="6*"></RowDefinition>
+                <RowDefinition Height="8*"></RowDefinition>
             </Grid.RowDefinitions>
-
-            <!--<Image x:Name="imgBackground" Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2"
-                    Width="Auto" Height="Auto" 
-                Source="Assets\Images\wood_bg_1.jpg"/>-->
-
-            <!--<Border Grid.Column="0" Background="Beige"></Border>
-            <Border Grid.Column="1" Background="Orange"></Border>
-            <Border Grid.Column="0" Grid.Row="1" Background="AntiqueWhite"></Border>
-            <Border Grid.Column="1" Grid.Row="0" Grid.RowSpan="2" Background="CornflowerBlue"></Border>-->
-
         </Grid>
     </Grid>
 </Page>

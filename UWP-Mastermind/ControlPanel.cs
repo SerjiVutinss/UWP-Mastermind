@@ -15,7 +15,7 @@ namespace UWP_Mastermind
     // this class will control the majority of the game logic
     // its constructor takes the current_turn and current_peg as 
     // parameters, which are used to set the starting turn
-    public class ControlPanel : StackPanel
+    public class ControlPanel : Grid
     {
         // reference to the MainPage, which is used for 
         // accessing the game methods
@@ -26,7 +26,7 @@ namespace UWP_Mastermind
             this._mainPage = mainPage;
 
             // layout and colours
-            this.Orientation = Orientation.Vertical;
+            //this.Orientation = Orientation.Vertical;
             this.Padding = new Thickness(5);
             //this.Background = MainPage.SECONDARY_BG;
             //this.BorderBrush = new SolidColorBrush(Colors.Black);
@@ -35,15 +35,38 @@ namespace UWP_Mastermind
             Ellipse el;
             foreach (SolidColorBrush c in MainPage._colorList)
             {
-                el = new Ellipse();
-                // TODO: check
-                el.Name = "color" + (MainPage._colorList.IndexOf(c) + 1);
-                el.Fill = c;
-                el.Height = MainPage.PEG_LOCATION_SIZE;
-                el.Width = MainPage.PEG_LOCATION_SIZE;
-                el.Margin = new Thickness(10);
-                el.Tapped += El_Tapped; ;
-                this.Children.Add(el);
+                this.RowDefinitions.Add(new RowDefinition());
+
+                int i = MainPage._colorList.IndexOf(c);
+
+                PegWrapper pegLocationWrapper = new PegWrapper(
+                    "colorLoc" + (i + 1),
+                    MainPage._colorList.IndexOf(c) + 1,
+                    MainPage.BORDER_BG,
+                    MainPage.PEG_LOCATION_SIZE
+                    );
+                pegLocationWrapper.Peg.SetValue(Grid.RowProperty, i);
+
+                PegWrapper pegWrapper = new PegWrapper(
+                    "color" + MainPage._colorList.IndexOf(c) + 1,
+                    MainPage._colorList.IndexOf(c) + 1,
+                    c,
+                    MainPage.PEG_SIZE
+                    );
+                pegWrapper.Peg.SetValue(Grid.RowProperty, i);
+
+                pegWrapper.Peg.Tapped += El_Tapped;
+
+                //el = new Ellipse();
+                //// TODO: check
+                //el.Name = "color" + (MainPage._colorList.IndexOf(c) + 1);
+                //el.Fill = c;
+                //el.Height = MainPage.PEG_LOCATION_SIZE;
+                //el.Width = MainPage.PEG_LOCATION_SIZE;
+                //el.Margin = new Thickness(10);
+                //el.Tapped += El_Tapped; ;
+                this.Children.Add(pegLocationWrapper.Peg);
+                this.Children.Add(pegWrapper.Peg);
             }
         }
 

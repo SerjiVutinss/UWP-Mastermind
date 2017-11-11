@@ -87,6 +87,8 @@ namespace UWP_Mastermind
 
         // used to store the solution
         PegContainer solution;
+        // max number of black pegs added, if equal to NUM_PEGS_PER_TURN, you win!
+        int BLACK_PEGS_ADDED = 0;
         // a list of the solution Ellipses, used to compare after each turn
         List<Ellipse> solutionList = new List<Ellipse>();
 
@@ -112,7 +114,7 @@ namespace UWP_Mastermind
             // generate a random solution
             SetSolution();
             // hide the solution
-
+            //this.solution.Visibility = Visibility.Collapsed;
             PlaneProjection pp = new PlaneProjection();
             pp.RotationX = -10;
             //pp.CenterOfRotationY = 10;
@@ -324,6 +326,17 @@ namespace UWP_Mastermind
 
             // if it is the last turn
             // TODO: Game Over?
+            if (BLACK_PEGS_ADDED == NUM_PEGS_PER_TURN)
+            {
+                // You Won
+                this.solution.Visibility = Visibility.Visible;
+            }
+            else if (current_turn == NUM_TURNS)
+            {
+                this.solution.Visibility = Visibility.Visible;
+                // Game Over - did not win
+                // Show the solution
+            }
         }
 
         private void CompareLists(List<Ellipse> turnPegs)
@@ -331,6 +344,7 @@ namespace UWP_Mastermind
             // use this to keep track of which location to add the next peg
             // to the feedback container
             int pegToAdd = 1;
+            BLACK_PEGS_ADDED = 0;
 
             // first check for elements which match both position and colour
             foreach (Ellipse turnPeg in turnPegs)
@@ -348,7 +362,8 @@ namespace UWP_Mastermind
                     // elements are the same colour and position:
                     // add a black marker to the feedback container and
                     // so that it is not checked again in the list
-                    AddFeedBackMarker(Colors.Black, pegToAdd);
+                    AddFeedBackMarker(Colors.Yellow, pegToAdd);
+                    BLACK_PEGS_ADDED++;
                     // then set the turnPeg Fill to null
                     turnPeg.Fill = null;
                     // and increment the pegsAdded
@@ -360,17 +375,21 @@ namespace UWP_Mastermind
             // now add the white ones
 
             // keep tracvk of the colours added so that one is not added twice?
-            List<Color> addedColoursList = new List<Color>();
+            List<Brush> addedColoursList = new List<Brush>();
             foreach (Ellipse solutionPeg in solutionList)
             {
                 foreach (Ellipse turnPeg in turnPegs)
                 {
                     if (turnPeg.Fill == solutionPeg.Fill)
                     {
-                        AddFeedBackMarker(Colors.White, pegToAdd);
-                        // set to null so it won't be checked positive again
-                        turnPeg.Fill = null;
-                        pegToAdd++;
+                        //if (!addedColoursList.Contains(turnPeg.Fill))
+                        //{
+                            AddFeedBackMarker(Colors.White, pegToAdd);
+                            // set to null so it won't be checked positive again
+                            addedColoursList.Add(turnPeg.Fill);
+                            turnPeg.Fill = null;
+                            pegToAdd++;
+                        //}
                     }
                 }
             }
@@ -398,9 +417,33 @@ namespace UWP_Mastermind
                 new SolidColorBrush(colour),
                 FEEDBACK_PEG_SIZE
                 );
+
+            if (pegNumber == 1)
+            {
+                pegWrapper.Peg.SetValue(Grid.ColumnProperty, 0);
+                pegWrapper.Peg.SetValue(Grid.RowProperty, 0);
+            }
+            else if (pegNumber == 2)
+            {
+                pegWrapper.Peg.SetValue(Grid.ColumnProperty, 1);
+                pegWrapper.Peg.SetValue(Grid.RowProperty, 0);
+            }
+            else if (pegNumber == 3)
+            {
+                pegWrapper.Peg.SetValue(Grid.ColumnProperty, 0);
+                pegWrapper.Peg.SetValue(Grid.RowProperty, 1);
+            }
+            else if (pegNumber == 4)
+            {
+                pegWrapper.Peg.SetValue(Grid.ColumnProperty, 1);
+                pegWrapper.Peg.SetValue(Grid.RowProperty, 1);
+            }
+
             FeedbackContainer fbContainer = FindName("turn" + current_turn + "feedback") as FeedbackContainer;
             Debug.WriteLine(fbContainer.Name);
             fbContainer.Children.Add(pegWrapper.Peg);
+
+
 
         }
 
@@ -414,8 +457,8 @@ namespace UWP_Mastermind
             SolidColorBrush c3 = new SolidColorBrush(Colors.Red);
             SolidColorBrush c4 = new SolidColorBrush(Colors.Yellow);
             SolidColorBrush c5 = new SolidColorBrush(Colors.Purple);
-            SolidColorBrush c6 = new SolidColorBrush(Colors.HotPink);
-            SolidColorBrush c7 = new SolidColorBrush(Colors.OrangeRed);
+            SolidColorBrush c6 = new SolidColorBrush(Colors.Magenta);
+            SolidColorBrush c7 = new SolidColorBrush(Colors.Cyan);
 
             colorList.Add(c1);
             colorList.Add(c2);
