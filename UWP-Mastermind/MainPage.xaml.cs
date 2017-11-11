@@ -54,7 +54,7 @@ namespace UWP_Mastermind
         // in the solution container.
         // TODO: This may be variable at a later stage, feedback container
         // is toughest to implement since it is a non-linear grid
-        public static readonly int NUM_PEGS = 4;
+        public static readonly int NUM_PEGS_PER_TURN = 4;
         // the number of turns per game
         // TODO: again, this may be variable later
         public static readonly int NUM_TURNS = 10;
@@ -73,7 +73,8 @@ namespace UWP_Mastermind
         // main background image brush
         public static ImageBrush MAIN_BG;
         // secondary background image brush (solution or turn container)
-        public static ImageBrush SECONDARY_BG; public static ImageBrush BORDER_BG;
+        public static ImageBrush SECONDARY_BG;
+        public static ImageBrush BORDER_BG;
 
 
 
@@ -82,6 +83,8 @@ namespace UWP_Mastermind
 
         // used to store the solution
         PegContainer solution;
+        // a list of the solution Ellipses, used to compare after each turn
+        List<Ellipse> solutionList = new List<Ellipse>();
 
         public MainPage()
         {
@@ -207,40 +210,34 @@ namespace UWP_Mastermind
         // generate a new solution and add it to the PegContainer solution object
         private void SetSolution()
         {
-            // 
             // for each number of pegs per turn,
             // add a random colour to the peg container named "solution"
             // name each peg solutionPeg + i
-            Ellipse solutionPegLocation;
             Ellipse solutionPeg;
             // better to create a random object here and call .Next() multiple times
             Random rand = new Random();
-            for (int i = 1; i <= NUM_PEGS; i++)
+            for (int i = 1; i <= NUM_PEGS_PER_TURN; i++)
             {
-                //this.solution = FindName("solution") as PegContainer;
-
                 // add the peg location
-                solutionPegLocation = new Ellipse();
-                solutionPegLocation.SetValue(Grid.ColumnProperty, i - 1);
-                solutionPegLocation.Height = PEG_LOCATION_SIZE;
-                solutionPegLocation.Width = PEG_LOCATION_SIZE;
-                solutionPegLocation.Fill = BORDER_BG;
-                this.solution.Children.Add(solutionPegLocation);
+                PegWrapper pegLocationWrapper = new PegWrapper(solution.Name, i, BORDER_BG, PEG_LOCATION_SIZE);
+                this.solution.Children.Add(pegLocationWrapper.Peg);
 
                 // add the actual peg with colour
                 solutionPeg = new Ellipse();
-                solutionPeg.Name = "solutionPeg" + i;
                 // generate a random number between 0 and the length of 
                 // _colourList, uppperbound is not included in random
                 int _randColourIndex = rand.Next(0, _colorList.Count);
-                solutionPeg.Fill = _colorList.ElementAt(_randColourIndex);
-                // TODO: should set constants here, for all pegs and containers created
-                solutionPeg.Height = PEG_SIZE;
-                solutionPeg.Width = PEG_SIZE;
-                // set the grid location to (i - 1) since grid is zero-based
-                solutionPeg.SetValue(Grid.ColumnProperty, i - 1);
+                // create a new pegWrapper with the correct arguments
+                PegWrapper pegWrapper = new PegWrapper(
+                    "solutionPeg",
+                    i,
+                    _colorList.ElementAt(_randColourIndex),
+                    PEG_SIZE);
+                solutionPeg = pegWrapper.Peg;
                 // add it to the PegContainer
                 this.solution.Children.Add(solutionPeg);
+                // also add it to the solutionList
+                this.solutionList.Add(solutionPeg);
             }
         }
 
@@ -249,26 +246,77 @@ namespace UWP_Mastermind
         public void NextMove()
         {
             // check if it is the last peg in the turn
-            if (MainPage.current_peg == MainPage.NUM_PEGS)
+            if (MainPage.current_peg == MainPage.NUM_PEGS_PER_TURN)
             {
+                // calculate the feedback for end of turn
+                CalculateTurnEnd();
                 // if so, reset the peg# to 1 
                 MainPage.current_peg = 1;
                 // and increment the turn#
                 MainPage.current_turn += 1;
+                // turn is over, calculate the end of turn
             }
             else
             {
                 MainPage.current_peg += 1;
             }
 
-            // add a move marker to the next move
-            this.AddNextMovemarker(MainPage.current_turn, MainPage.current_peg);
+            // check if it was the last turn
+            if (MainPage.current_turn > NUM_TURNS)
+            {
+                // TODO: game over
+            }
+            else
+            {
+                // add a move marker to the next move
+                this.AddNextMovemarker(MainPage.current_turn, MainPage.current_peg);
+            }
+
         }
 
+        // called from NextMove() if a new turn has been detected
         // at the end of a turn, check the turn pegs against the solution pegs
         public void CalculateTurnEnd()
         {
-            // TODO: implement
+            // going to create two lists and compare
+            List<Ellipse> turnPegs = new List<Ellipse>();
+            // find the correct pegContainer: named turnXpegs
+            PegContainer pegContainer = FindName("turn" + current_turn + "pegs") as PegContainer;
+            Debug.WriteLine(pegContainer.Name);
+
+            // get each colour from the current turn,
+            // compare these colours against the solution colours and indexes
+            // simply find any Ellipses that have a name starting with
+            // turnXpeg where X is the turn number
+            string queryString = "turn" + current_turn + "peg";
+            Debug.WriteLine(queryString);
+            foreach (var item in pegContainer.Children)
+            {
+                if (item.GetType() == typeof(Ellipse))
+                {
+                    Ellipse peg = (Ellipse)item;
+                    if (peg.Name.StartsWith(queryString))
+                    {
+                        Debug.WriteLine("Found peg: " + peg.Name);
+                        // add the element to the list
+                        turnPegs.Add(peg);
+                    }
+                }
+            }
+            if (turnPegs.Count == solutionList.Count)
+            {
+                // list is the correct size
+                Debug.WriteLine("turn " + current_turn + " over!");
+            }
+            else
+            {
+                // error
+                Debug.WriteLine("turn " + current_turn + " error!");
+            }
+
+
+            // if it is the last turn
+            // TODO: Game Over?
         }
 
         // create a static list of colours
@@ -295,6 +343,7 @@ namespace UWP_Mastermind
             return colorList;
         }
 
+        // assign the static image brushes to images
         private void SetImageBrushes()
         {
             // vertical wood grain

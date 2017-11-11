@@ -14,7 +14,7 @@ namespace UWP_Mastermind
     {
         // workaround
         public Ellipse pegLocation;
-        public PegLocationWrapper(StackPanel parent, int pegLocationNumber)
+        public PegLocationWrapper(String turnName, int pegLocationNumber)
         {
             this.pegLocation = new Ellipse();
             // build a new peg and set some values
@@ -24,7 +24,7 @@ namespace UWP_Mastermind
             this.pegLocation.Height = MainPage.PEG_LOCATION_SIZE;
             this.pegLocation.Width = MainPage.PEG_LOCATION_SIZE;
             // give it a name which is based on the parent.Name and peg#(i)
-            this.pegLocation.Name = parent.Name + "pegLocation" + pegLocationNumber;
+            this.pegLocation.Name = turnName + "pegLocation" + pegLocationNumber;
             // as turn peg numbers are not zero-based and 
             // column values are, decrement the peg number by 1
             // and place in that column
