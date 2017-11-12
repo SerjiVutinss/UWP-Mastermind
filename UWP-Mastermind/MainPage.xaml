@@ -10,6 +10,7 @@
     <Grid x:Name="rootGrid" Width="600" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid x:Name="boardGrid">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"></ColumnDefinition>
                 <ColumnDefinition Width="4*"></ColumnDefinition>
                 <ColumnDefinition Width="2*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
@@ -17,6 +18,13 @@
                 <RowDefinition Height="*"></RowDefinition>
                 <RowDefinition Height="8*"></RowDefinition>
             </Grid.RowDefinitions>
+
+            <StackPanel x:Name="spButtons" Grid.Column="0" Grid.Row="1" Padding="20,0,0,0"
+                        HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,50"
+                        >
+                <Button x:Name="btnNewGame" Content="New Game" Margin="0,10,0,0" Foreground="White" />
+                <Button x:Name="btnExit" Content="Exit" Margin="0,10,0,0" Foreground="White"/>
+            </StackPanel>
         </Grid>
     </Grid>
 </Page>

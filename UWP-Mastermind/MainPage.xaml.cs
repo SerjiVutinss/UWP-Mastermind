@@ -105,6 +105,12 @@ namespace UWP_Mastermind
             _colorList = CreateColourList();
             // assign the background image brushes
             SetImageBrushes();
+            // setup the button backgrounds
+            btnNewGame.Background = SECONDARY_BG;
+            btnNewGame.BorderBrush = BORDER_BG;
+            btnExit.Background = SECONDARY_BG;
+            btnExit.BorderBrush = BORDER_BG;
+
 
             StartGame();
         }
@@ -121,9 +127,9 @@ namespace UWP_Mastermind
             SetSolution();
             // hide the solution
             this.solution.Visibility = Visibility.Collapsed;
+            // and set some more properties on the boardGrid
             PlaneProjection pp = new PlaneProjection();
             pp.RotationX = -10;
-            //pp.CenterOfRotationY = 10;
             this.boardGrid.Projection = pp;
             this.boardGrid.BorderBrush = BORDER_BG;
             this.boardGrid.BorderThickness = new Thickness(20);
@@ -131,22 +137,16 @@ namespace UWP_Mastermind
 
         private void BuildTheBoard()
         {
-            //// set some colours on the boardGrid
-            //Border brdr = new Border();
-            ////brdr.Background = new SolidColorBrush(Colors.RosyBrown);
-            //brdr.SetValue(Grid.ColumnProperty, 1);
-            //brdr.SetValue(Grid.RowProperty, 0);
-            //brdr.SetValue(Grid.RowSpanProperty, 2);
-
+            // set the board background
             this.boardGrid.Background = MAIN_BG;
 
             // add stackpanel to grid 1, 0 - colspan 2 - name it "spTurns"
             StackPanel spTurns = new StackPanel();
-            spTurns.SetValue(Grid.ColumnProperty, 0);
+            spTurns.SetValue(Grid.ColumnProperty, 1);
             spTurns.SetValue(Grid.RowProperty, 1);
             spTurns.SetValue(Grid.ColumnSpanProperty, 1);
 
-            // create the colution peg container
+            // create the solution peg container
             // TODO: don't add the solution yet as it may need to be loaded from AppData
             // so create the solution in method SetSolution()
             this.solution = new PegContainer(spTurns, 4);
@@ -157,13 +157,13 @@ namespace UWP_Mastermind
 
             this.solution.Name = "solution";
             this.solution.Background = SECONDARY_BG;
-            this.solution.SetValue(Grid.ColumnProperty, 0);
+            this.solution.SetValue(Grid.ColumnProperty, 1);
             this.solution.SetValue(Grid.RowProperty, 0);
             this.solution.HorizontalAlignment = HorizontalAlignment.Right;
             // TODO: calculate total size of a turncontainer 
             // and then set a left padding here
             this.solution.Padding = new Thickness(
-                75,
+                60,
                 MainPage.PEG_CONTAINER_PADDING,
                 MainPage.PEG_CONTAINER_PADDING,
                 MainPage.PEG_CONTAINER_PADDING);
@@ -189,7 +189,7 @@ namespace UWP_Mastermind
             ControlPanel cp = new ControlPanel(this, current_turn, current_peg);
             cp.Name = "colourPallette";
             cp.Margin = new Thickness(5);
-            spControlPanelContainer.SetValue(Grid.ColumnProperty, 1);
+            spControlPanelContainer.SetValue(Grid.ColumnProperty, 2);
             spControlPanelContainer.SetValue(Grid.RowProperty, 1);
             spControlPanelContainer.Children.Add(cp);
             this.boardGrid.Children.Add(spControlPanelContainer);
@@ -372,88 +372,21 @@ namespace UWP_Mastermind
                 // Show the solution
             }
         }
-
-        //private void CompareLists(List<Ellipse> turnPegList)
-        //{
-        //    // the position in which to add the feedback marker
-        //    int pegToAdd = 1;
-        //    // set the global to 0, if this 
-        //    // reachess 4, the game has been won
-        //    BLACK_PEGS_ADDED = 0;
-
-        //    // create an indexList
-        //    List<int> indexList = new List<int>();
-        //    // make a copy of each pegList
-        //    //List<Ellipse> turnPegListCopy = new List<Ellipse>();
-        //    List<Ellipse> solutionListCopy = new List<Ellipse>();
-
-        //    // make a copy of turnPegList and solutionList
-        //    foreach (Ellipse peg in solutionList)
-        //    {
-        //        solutionListCopy.Add(new Ellipse
-        //        {
-        //            Fill = peg.Fill
-        //        });
-        //    }
-        //    //foreach (Ellipse peg in turnPegList)
-        //    //{
-        //    //    turnPegListCopy.Add(new Ellipse
-        //    //    {
-        //    //        Fill = peg.Fill
-        //    //    });
-        //    //}
-
-        //    // copies of each list have been made,
-        //    // now loop through turnPegsListCopy
-        //    foreach (Ellipse peg in turnPegList)
-        //    {
-        //        int i = turnPegList.IndexOf(peg);
-        //        if (peg.Fill == solutionListCopy.ElementAt(i).Fill)
-        //        {
-        //            // add the index to the indexList, the elements
-        //            // at this index in each list will be removed
-        //            // at the end of the loop
-        //            Debug.WriteLine("Element at index " + i + " is a match!");
-        //            indexList.Add(i);
-        //            // add a dark feedback marker
-        //            AddFeedBackMarker(Colors.MidnightBlue, pegToAdd);
-        //            // increment the global
-        //            BLACK_PEGS_ADDED++;
-        //            // increment the pegToAdd variable
-        //            pegToAdd++;
-        //        }
-        //    } // end loop
-        //    // now remove the elements from the lists
-        //    foreach (int i in indexList)
-        //    {
-        //        turnPegList.RemoveAt(i);
-        //        solutionListCopy.RemoveAt(i);
-        //    }
-
-        //    // now check for colour matches
-        //    foreach (Ellipse turnPeg in turnPegList)
-        //    {
-        //        foreach (Ellipse solutionPeg in solutionListCopy)
-        //        {
-        //            if (turnPeg.Fill == solutionPeg.Fill)
-        //            {
-        //                // add a white feedback marker
-        //                AddFeedBackMarker(Colors.White, pegToAdd);
-        //                // set the solution  Solid
-        //                solutionPeg.Fill = new SolidColorBrush(Colors.White);
-        //                // increment pegToAdd
-        //                pegToAdd++;
-        //            }
-        //        }
-        //    }
-        //}
-
+        
+        // this method is called after each turn. it takes a parameter of a 
+        // list of ellipses which have fills the same as the ones in the 
+        // actual turn container, so as not to change the colours of the 
+        // pegs on the board
         private void CompareLists(List<Ellipse> turnPegs)
         {
+            // these will be used to ensure that a particular 
+            // peg is not checked again once matched
+            Brush solutionPegCheckedColor = new SolidColorBrush(Colors.Black);
+            Brush turnPegCheckedColor = new SolidColorBrush(Colors.White);
 
-            List<Ellipse> solutionListCopy = new List<Ellipse>();
             // make a copy of the solution list so as not to 
             // affect the colours in the solution itself
+            List<Ellipse> solutionListCopy = new List<Ellipse>();
             foreach (Ellipse peg in solutionList)
             {
                 solutionListCopy.Add(new Ellipse
@@ -468,7 +401,6 @@ namespace UWP_Mastermind
             int pegToAdd = 1;
             BLACK_PEGS_ADDED = 0;
 
-            List<int> indexList = new List<int>();
             // first check for elements which match both position and colour
             foreach (Ellipse turnPeg in turnPegs)
             {
@@ -483,58 +415,40 @@ namespace UWP_Mastermind
                 if (turnPeg.Fill == solutionPeg.Fill)
                 {
                     // elements are the same colour and position:
-                    // add a dark marker to the feedback container and
-                    // so that it is not checked again in the list
+                    //  add a dark marker to the feedback container and
                     AddFeedBackMarker(Colors.DarkBlue, pegToAdd);
+                    // increment the BLACK_PEGS_ADDED this turn
                     BLACK_PEGS_ADDED++;
-                    // then set the turnPeg Fill to a color which can't be matched again
-                    solutionPeg.Fill = new SolidColorBrush(Colors.White);
-                    turnPeg.Fill = new SolidColorBrush(Colors.Black);
-                    // and increment the pegsAdded
+                    // then set the turnPeg and solutionPeg Fill to a 
+                    // color which can't be matched again
+                    solutionPeg.Fill = solutionPegCheckedColor;
+                    turnPeg.Fill = turnPegCheckedColor;
+                    // and increment the pegsAdded so that the next peg 
+                    // is placed in the correct location
                     pegToAdd++;
-                    indexList.Add(i);
                 }
             }
-
-            //foreach (int i in indexList)
-            //{
-            //    (solutionListCopy.ElementAt(i) as Ellipse).Fill = new SolidColorBrush(Colors.White);
-            //    (turnPegs.ElementAt(i) as Ellipse).Fill = new SolidColorBrush(Colors.Black);
-            //}
-
-            // loop through the solution list again and set any checked
-            // pegs to Coloe White
-
-            // black feedback markers have been added and 
-            // colours set to null for any macthing elements,
-            // now add the white ones
-
-            // keep tracvk of the colours added so that one is not added twice?
             List<Brush> addedColoursList = new List<Brush>();
+            // for each turnPeg
             foreach (Ellipse turnPeg in turnPegs)
             {
+                // and for each solution peg
                 foreach (Ellipse solutionPeg in solutionListCopy)
                 {
+                    // check if the colours match
                     if (turnPeg.Fill == solutionPeg.Fill)
                     {
-                        //if (!addedColoursList.Contains(turnPeg.Fill))
-                        //{
+                        // if they do, add a white marker
                         AddFeedBackMarker(Colors.White, pegToAdd);
-                        // set to null so it won't be checked positive again
-                        //solutionListCopy.Add(turnPeg.Fill);
-                        //solutionPeg.Fill = null;
-                        solutionPeg.Fill = new SolidColorBrush(Colors.White);
-                        turnPeg.Fill = new SolidColorBrush(Colors.Black);
+                        // set the colours of these pegs to colours not used in 
+                        // the game so they won't be checked again this turn
+                        solutionPeg.Fill = solutionPegCheckedColor;
+                        turnPeg.Fill = turnPegCheckedColor;
+                        // and increment the feedback peg location
                         pegToAdd++;
-                        //}
                     }
                 }
             }
-        }
-
-        private bool CompareListElement(Ellipse turnPeg, Ellipse solutionPeg)
-        {
-            return false;
         }
 
         // feedback containers are named turnXfeedback
@@ -555,6 +469,8 @@ namespace UWP_Mastermind
                 FEEDBACK_PEG_SIZE
                 );
 
+            // TODO: maybe add a method for figuring this out. it could also 
+            // be used for building the feedback containers initialy
             if (pegNumber == 1)
             {
                 pegWrapper.Peg.SetValue(Grid.ColumnProperty, 0);
@@ -579,9 +495,6 @@ namespace UWP_Mastermind
             FeedbackContainer fbContainer = FindName("turn" + current_turn + "feedback") as FeedbackContainer;
             Debug.WriteLine(fbContainer.Name);
             fbContainer.Children.Add(pegWrapper.Peg);
-
-
-
         }
 
         // create a static list of colours
@@ -626,7 +539,7 @@ namespace UWP_Mastermind
                     new Uri(this.BaseUri, @"Assets\Images\wood_bg_1.jpg")
                     ),
                 Stretch = Stretch.UniformToFill
-            }; // horizontal wood grain
+            }; // darker wood grain
             BORDER_BG = new ImageBrush
             {
                 ImageSource = new BitmapImage(
