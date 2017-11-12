@@ -25,15 +25,6 @@ namespace UWP_Mastermind
             double pegSize
             )
         {
-            this.Peg.Tag = "null";
-            if (colour.GetType() == typeof(SolidColorBrush))
-            {
-                //Color thisColour = (Color)colour.GetValue(SolidColorBrush.ColorProperty);
-                //this.Peg.Tag = thisColour.ToString();
-                Debug.WriteLine(this.Peg.Tag);
-            }
-
-
             // build a new peg and set some values
             this.Peg = new Ellipse();
             this.Peg.Fill = colour;
