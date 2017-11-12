@@ -373,6 +373,81 @@ namespace UWP_Mastermind
             }
         }
 
+        //private void CompareLists(List<Ellipse> turnPegList)
+        //{
+        //    // the position in which to add the feedback marker
+        //    int pegToAdd = 1;
+        //    // set the global to 0, if this 
+        //    // reachess 4, the game has been won
+        //    BLACK_PEGS_ADDED = 0;
+
+        //    // create an indexList
+        //    List<int> indexList = new List<int>();
+        //    // make a copy of each pegList
+        //    //List<Ellipse> turnPegListCopy = new List<Ellipse>();
+        //    List<Ellipse> solutionListCopy = new List<Ellipse>();
+
+        //    // make a copy of turnPegList and solutionList
+        //    foreach (Ellipse peg in solutionList)
+        //    {
+        //        solutionListCopy.Add(new Ellipse
+        //        {
+        //            Fill = peg.Fill
+        //        });
+        //    }
+        //    //foreach (Ellipse peg in turnPegList)
+        //    //{
+        //    //    turnPegListCopy.Add(new Ellipse
+        //    //    {
+        //    //        Fill = peg.Fill
+        //    //    });
+        //    //}
+
+        //    // copies of each list have been made,
+        //    // now loop through turnPegsListCopy
+        //    foreach (Ellipse peg in turnPegList)
+        //    {
+        //        int i = turnPegList.IndexOf(peg);
+        //        if (peg.Fill == solutionListCopy.ElementAt(i).Fill)
+        //        {
+        //            // add the index to the indexList, the elements
+        //            // at this index in each list will be removed
+        //            // at the end of the loop
+        //            Debug.WriteLine("Element at index " + i + " is a match!");
+        //            indexList.Add(i);
+        //            // add a dark feedback marker
+        //            AddFeedBackMarker(Colors.MidnightBlue, pegToAdd);
+        //            // increment the global
+        //            BLACK_PEGS_ADDED++;
+        //            // increment the pegToAdd variable
+        //            pegToAdd++;
+        //        }
+        //    } // end loop
+        //    // now remove the elements from the lists
+        //    foreach (int i in indexList)
+        //    {
+        //        turnPegList.RemoveAt(i);
+        //        solutionListCopy.RemoveAt(i);
+        //    }
+
+        //    // now check for colour matches
+        //    foreach (Ellipse turnPeg in turnPegList)
+        //    {
+        //        foreach (Ellipse solutionPeg in solutionListCopy)
+        //        {
+        //            if (turnPeg.Fill == solutionPeg.Fill)
+        //            {
+        //                // add a white feedback marker
+        //                AddFeedBackMarker(Colors.White, pegToAdd);
+        //                // set the solution  Solid
+        //                solutionPeg.Fill = new SolidColorBrush(Colors.White);
+        //                // increment pegToAdd
+        //                pegToAdd++;
+        //            }
+        //        }
+        //    }
+        //}
+
         private void CompareLists(List<Ellipse> turnPegs)
         {
 
@@ -393,6 +468,7 @@ namespace UWP_Mastermind
             int pegToAdd = 1;
             BLACK_PEGS_ADDED = 0;
 
+            List<int> indexList = new List<int>();
             // first check for elements which match both position and colour
             foreach (Ellipse turnPeg in turnPegs)
             {
@@ -407,16 +483,24 @@ namespace UWP_Mastermind
                 if (turnPeg.Fill == solutionPeg.Fill)
                 {
                     // elements are the same colour and position:
-                    // add a black marker to the feedback container and
+                    // add a dark marker to the feedback container and
                     // so that it is not checked again in the list
-                    AddFeedBackMarker(Colors.DarkGray, pegToAdd);
+                    AddFeedBackMarker(Colors.DarkBlue, pegToAdd);
                     BLACK_PEGS_ADDED++;
-                    // then set the turnPeg Fill to null
-                    solutionPeg.Fill = null;
+                    // then set the turnPeg Fill to a color which can't be matched again
+                    solutionPeg.Fill = new SolidColorBrush(Colors.White);
+                    turnPeg.Fill = new SolidColorBrush(Colors.Black);
                     // and increment the pegsAdded
                     pegToAdd++;
+                    indexList.Add(i);
                 }
             }
+
+            //foreach (int i in indexList)
+            //{
+            //    (solutionListCopy.ElementAt(i) as Ellipse).Fill = new SolidColorBrush(Colors.White);
+            //    (turnPegs.ElementAt(i) as Ellipse).Fill = new SolidColorBrush(Colors.Black);
+            //}
 
             // loop through the solution list again and set any checked
             // pegs to Coloe White
@@ -427,9 +511,9 @@ namespace UWP_Mastermind
 
             // keep tracvk of the colours added so that one is not added twice?
             List<Brush> addedColoursList = new List<Brush>();
-            foreach (Ellipse solutionPeg in solutionListCopy)
+            foreach (Ellipse turnPeg in turnPegs)
             {
-                foreach (Ellipse turnPeg in turnPegs)
+                foreach (Ellipse solutionPeg in solutionListCopy)
                 {
                     if (turnPeg.Fill == solutionPeg.Fill)
                     {
@@ -438,8 +522,9 @@ namespace UWP_Mastermind
                         AddFeedBackMarker(Colors.White, pegToAdd);
                         // set to null so it won't be checked positive again
                         //solutionListCopy.Add(turnPeg.Fill);
-                        solutionPeg.Fill = null;
-                        turnPeg.Fill = null;
+                        //solutionPeg.Fill = null;
+                        solutionPeg.Fill = new SolidColorBrush(Colors.White);
+                        turnPeg.Fill = new SolidColorBrush(Colors.Black);
                         pegToAdd++;
                         //}
                     }
