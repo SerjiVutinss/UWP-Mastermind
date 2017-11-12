@@ -22,10 +22,10 @@ namespace UWP_Mastermind
         public TurnContainer(int turnNumber)
         {
             this.turnNumber = turnNumber;
-            this.Padding = new Thickness(MainPage.PEG_CONTAINER_PADDING);
+            this.Padding = new Thickness(5);
 
             this.BorderBrush = MainPage.BORDER_BG;
-            this.BorderThickness = new Thickness(2);
+            this.BorderThickness = new Thickness(MainPage.BORDER_THICKNESS);
 
             this.Background = MainPage.SECONDARY_BG;
 
@@ -39,6 +39,8 @@ namespace UWP_Mastermind
 
             this.pegContainer = new PegContainer(this, pegContainerSize);
             this.Children.Add(this.pegContainer);
+
+            //MainPage.TURN_CONTAINER_WIDTH = this.Width;
             
         }
 

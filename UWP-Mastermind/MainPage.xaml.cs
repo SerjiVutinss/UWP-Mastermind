@@ -40,13 +40,7 @@ namespace UWP_Mastermind
         //
         /// </summary>
         /// 
-        // PegContainer display and layout values
-        //static SolidColorBrush PEG_CONTAINER_COLOUR = new SolidColorBrush(Colors.Black);
-        public static double PEG_MARGIN_SIZE = PEG_LOCATION_SIZE / 5;
-        public static double PEG_CONTAINER_BORDER = PEG_LOCATION_SIZE / 50;
-        public static double PEG_CONTAINER_PADDING = PEG_LOCATION_SIZE / 10;
 
-        public static double BORDER_THICKNESS = 2;
 
         // CONSTANTS
 
@@ -85,6 +79,18 @@ namespace UWP_Mastermind
         // END CONSTANTS
         #endregion Globals and 
 
+        // PegContainer display and layout values
+        //static SolidColorBrush PEG_CONTAINER_COLOUR = new SolidColorBrush(Colors.Black);
+        public static double PEG_MARGIN_SIZE = PEG_LOCATION_SIZE / 5;
+        public static double PEG_CONTAINER_BORDER = PEG_LOCATION_SIZE / 50;
+        public static double PEG_CONTAINER_PADDING = PEG_LOCATION_SIZE / 10;
+
+        public static double TURN_CONTAINER_PADDING = PEG_CONTAINER_PADDING / 10;
+
+        public static double BORDER_THICKNESS = 2;
+
+        public static double TURN_CONTAINER_WIDTH = 0;
+
         // used to store the solution
         PegContainer solution;
         // max number of black pegs added, if equal to NUM_PEGS_PER_TURN, you win!
@@ -114,11 +120,13 @@ namespace UWP_Mastermind
             // generate a random solution
             SetSolution();
             // hide the solution
-            //this.solution.Visibility = Visibility.Collapsed;
+            this.solution.Visibility = Visibility.Collapsed;
             PlaneProjection pp = new PlaneProjection();
             pp.RotationX = -10;
             //pp.CenterOfRotationY = 10;
             this.boardGrid.Projection = pp;
+            this.boardGrid.BorderBrush = BORDER_BG;
+            this.boardGrid.BorderThickness = new Thickness(20);
         }
 
         private void BuildTheBoard()
@@ -142,11 +150,18 @@ namespace UWP_Mastermind
             // TODO: don't add the solution yet as it may need to be loaded from AppData
             // so create the solution in method SetSolution()
             this.solution = new PegContainer(spTurns, 4);
+            Button btn = new Button();
+            btn.Content = "Reveal";
+            this.boardGrid.Children.Add(btn);
+            btn.Tapped += btn_Tapped;
+
             this.solution.Name = "solution";
             this.solution.Background = SECONDARY_BG;
             this.solution.SetValue(Grid.ColumnProperty, 0);
             this.solution.SetValue(Grid.RowProperty, 0);
             this.solution.HorizontalAlignment = HorizontalAlignment.Right;
+            // TODO: calculate total size of a turncontainer 
+            // and then set a left padding here
             this.solution.Padding = new Thickness(
                 75,
                 MainPage.PEG_CONTAINER_PADDING,
@@ -169,15 +184,32 @@ namespace UWP_Mastermind
 
             // build and add the control panel element, passing the 
             // current turn and peg values
+            // add this to a stackpanel
+            StackPanel spControlPanelContainer = new StackPanel();
             ControlPanel cp = new ControlPanel(this, current_turn, current_peg);
             cp.Name = "colourPallette";
-            cp.SetValue(Grid.ColumnProperty, 1);
-            cp.SetValue(Grid.RowProperty, 1);
-            this.boardGrid.Children.Add(cp);
+            cp.Margin = new Thickness(5);
+            spControlPanelContainer.SetValue(Grid.ColumnProperty, 1);
+            spControlPanelContainer.SetValue(Grid.RowProperty, 1);
+            spControlPanelContainer.Children.Add(cp);
+            this.boardGrid.Children.Add(spControlPanelContainer);
 
             // for each turn (numTurns), add a turn container to spTurns - decrementing loop
             // add each turn container to the stackpanel
         }
+
+        private void btn_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (this.solution.Visibility == Visibility.Collapsed)
+            {
+                this.solution.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                this.solution.Visibility = Visibility.Collapsed;
+            }
+        }
+
         // move marker will be added to row 1 in the turn container
         // and column (peg_number)
         public void AddNextMovemarker(int numTurn, int numPeg)
@@ -216,6 +248,8 @@ namespace UWP_Mastermind
         // generate a new solution and add it to the PegContainer solution object
         private void SetSolution()
         {
+            // TODO: do this a better way
+            //this.solution.Width = TURN_CONTAINER_WIDTH;
             // for each number of pegs per turn,
             // add a random colour to the peg container named "solution"
             // name each peg solutionPeg + i
@@ -341,6 +375,19 @@ namespace UWP_Mastermind
 
         private void CompareLists(List<Ellipse> turnPegs)
         {
+
+            List<Ellipse> solutionListCopy = new List<Ellipse>();
+            // make a copy of the solution list so as not to 
+            // affect the colours in the solution itself
+            foreach (Ellipse peg in solutionList)
+            {
+                solutionListCopy.Add(new Ellipse
+                {
+                    Fill = peg.Fill
+                });
+            }
+
+
             // use this to keep track of which location to add the next peg
             // to the feedback container
             int pegToAdd = 1;
@@ -355,28 +402,32 @@ namespace UWP_Mastermind
                 // get the list index of the peg
                 int i = turnPegs.IndexOf(turnPeg);
                 // get the corresponding element from solutionList
-                Ellipse solutionPeg = solutionList.ElementAt(i);
+                Ellipse solutionPeg = solutionListCopy.ElementAt(i);
                 // compare the Fill properties
                 if (turnPeg.Fill == solutionPeg.Fill)
                 {
                     // elements are the same colour and position:
                     // add a black marker to the feedback container and
                     // so that it is not checked again in the list
-                    AddFeedBackMarker(Colors.Yellow, pegToAdd);
+                    AddFeedBackMarker(Colors.DarkGray, pegToAdd);
                     BLACK_PEGS_ADDED++;
                     // then set the turnPeg Fill to null
-                    turnPeg.Fill = null;
+                    solutionPeg.Fill = null;
                     // and increment the pegsAdded
                     pegToAdd++;
                 }
             }
+
+            // loop through the solution list again and set any checked
+            // pegs to Coloe White
+
             // black feedback markers have been added and 
             // colours set to null for any macthing elements,
             // now add the white ones
 
             // keep tracvk of the colours added so that one is not added twice?
             List<Brush> addedColoursList = new List<Brush>();
-            foreach (Ellipse solutionPeg in solutionList)
+            foreach (Ellipse solutionPeg in solutionListCopy)
             {
                 foreach (Ellipse turnPeg in turnPegs)
                 {
@@ -384,11 +435,12 @@ namespace UWP_Mastermind
                     {
                         //if (!addedColoursList.Contains(turnPeg.Fill))
                         //{
-                            AddFeedBackMarker(Colors.White, pegToAdd);
-                            // set to null so it won't be checked positive again
-                            addedColoursList.Add(turnPeg.Fill);
-                            turnPeg.Fill = null;
-                            pegToAdd++;
+                        AddFeedBackMarker(Colors.White, pegToAdd);
+                        // set to null so it won't be checked positive again
+                        //solutionListCopy.Add(turnPeg.Fill);
+                        solutionPeg.Fill = null;
+                        turnPeg.Fill = null;
+                        pegToAdd++;
                         //}
                     }
                 }

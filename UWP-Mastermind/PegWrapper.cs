@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -23,10 +25,19 @@ namespace UWP_Mastermind
             double pegSize
             )
         {
+            this.Peg.Tag = "null";
+            if (colour.GetType() == typeof(SolidColorBrush))
+            {
+                //Color thisColour = (Color)colour.GetValue(SolidColorBrush.ColorProperty);
+                //this.Peg.Tag = thisColour.ToString();
+                Debug.WriteLine(this.Peg.Tag);
+            }
+
+
             // build a new peg and set some values
             this.Peg = new Ellipse();
             this.Peg.Fill = colour;
-            this.Peg.Margin = new Thickness(MainPage.PEG_MARGIN_SIZE);
+            //this.Peg.Margin = new Thickness(MainPage.PEG_MARGIN_SIZE);
             this.Peg.Height = pegSize;
             this.Peg.Width = pegSize;
             // give it a name which is based on the parent.Name and peg#(i)

@@ -46,6 +46,7 @@ namespace UWP_Mastermind
                     MainPage.PEG_LOCATION_SIZE
                     );
                 pegLocationWrapper.Peg.SetValue(Grid.RowProperty, i);
+                pegLocationWrapper.Peg.Margin = new Thickness(10);
 
                 PegWrapper pegWrapper = new PegWrapper(
                     "color" + MainPage._colorList.IndexOf(c) + 1,
@@ -54,6 +55,7 @@ namespace UWP_Mastermind
                     MainPage.PEG_SIZE
                     );
                 pegWrapper.Peg.SetValue(Grid.RowProperty, i);
+                pegWrapper.Peg.Margin = new Thickness(10);
 
                 pegWrapper.Peg.Tapped += El_Tapped;
 

@@ -20,7 +20,7 @@ namespace UWP_Mastermind
             // build a new peg and set some values
             this.pegLocation = new Ellipse();
             this.pegLocation.Fill = MainPage.BORDER_BG;
-            this.pegLocation.Margin = new Thickness(MainPage.PEG_MARGIN_SIZE);
+            //this.pegLocation.Margin = new Thickness(MainPage.PEG_MARGIN_SIZE);
             this.pegLocation.Height = MainPage.PEG_LOCATION_SIZE;
             this.pegLocation.Width = MainPage.PEG_LOCATION_SIZE;
             // give it a name which is based on the parent.Name and peg#(i)

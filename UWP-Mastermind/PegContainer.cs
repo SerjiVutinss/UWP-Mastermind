@@ -36,8 +36,8 @@ namespace UWP_Mastermind
             // set some visual properties for the container
             //this.BorderBrush = MainPage.PEG_CONTAINER_COLOUR;
             //this.BorderThickness = new Thickness(PEG_CONTAINER_BORDER);
-            this.Padding = new Thickness(MainPage.PEG_CONTAINER_PADDING);
-            this.Margin = new Thickness(MainPage.PEG_CONTAINER_PADDING);
+            //this.Padding = new Thickness(MainPage.PEG_CONTAINER_PADDING);
+            //this.Margin = new Thickness(MainPage.PEG_CONTAINER_PADDING);
             this.Name = parent.Name + "pegs";
 
             // add a new row which, in the case of turns,

@@ -28,7 +28,7 @@ namespace UWP_Mastermind
             this.ColumnDefinitions.Add(new ColumnDefinition());
             this.RowDefinitions.Add(new RowDefinition());
             this.RowDefinitions.Add(new RowDefinition());
-            this.Padding = new Thickness(5);
+            this.Padding = new Thickness(2);
 
             this.Name = parent.Name + "feedback";
 
