@@ -8,23 +8,32 @@
     mc:Ignorable="d">
 
     <Grid x:Name="rootGrid" Width="600" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <Grid x:Name="boardGrid">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="10*"/>
+        </Grid.ColumnDefinitions>
+
+
+        <StackPanel x:Name="spButtons" Grid.Column="0" Padding="20,0,0,0" Width="100"
+                        HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,50"
+                        >
+            <Button x:Name="btnNewGame" Width="Auto" Content="New" Margin="5" Foreground="White" Tapped="btnNewGame_Tapped" />
+            <Button x:Name="btnExit" Content="Exit" Margin="5" Foreground="White"/>
+        </StackPanel>
+
+        <Grid x:Name="boardGrid" Grid.Column="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"></ColumnDefinition>
+                <!--Column 0 will hold the turns and solution -->
                 <ColumnDefinition Width="4*"></ColumnDefinition>
+                <!--Column 1 will hold the colours -->
                 <ColumnDefinition Width="2*"></ColumnDefinition>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <!--Row 1 will hold the solution-->
                 <RowDefinition Height="*"></RowDefinition>
+                <!--Row 1 will hold the turns-->
                 <RowDefinition Height="8*"></RowDefinition>
             </Grid.RowDefinitions>
-
-            <StackPanel x:Name="spButtons" Grid.Column="0" Grid.Row="1" Padding="20,0,0,0"
-                        HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0,0,0,50"
-                        >
-                <Button x:Name="btnNewGame" Content="New Game" Margin="0,10,0,0" Foreground="White" />
-                <Button x:Name="btnExit" Content="Exit" Margin="0,10,0,0" Foreground="White"/>
-            </StackPanel>
         </Grid>
     </Grid>
 </Page>

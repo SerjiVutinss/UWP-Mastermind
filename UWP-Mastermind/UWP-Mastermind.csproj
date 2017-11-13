@@ -96,7 +96,7 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="BrushWrapper.cs" />
-    <Compile Include="ControlPanel.cs" />
+    <Compile Include="ColourPalette.cs" />
     <Compile Include="FeedbackContainer.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>

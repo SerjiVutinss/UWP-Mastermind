@@ -101,67 +101,76 @@ namespace UWP_Mastermind
         public MainPage()
         {
             this.InitializeComponent();
-            // create the colour list
+
+            // create the colour list - only needs to be done once
             _colorList = CreateColourList();
             // assign the background image brushes
             SetImageBrushes();
+
+            // and set some properties on the rootGrid
+            PlaneProjection pp = new PlaneProjection();
+            pp.RotationX = -10;
+            this.rootGrid.Projection = pp;
+            this.rootGrid.Background = MAIN_BG;
+            this.rootGrid.BorderBrush = BORDER_BG;
+            this.rootGrid.BorderThickness = new Thickness(20);
+
             // setup the button backgrounds
             btnNewGame.Background = SECONDARY_BG;
             btnNewGame.BorderBrush = BORDER_BG;
             btnExit.Background = SECONDARY_BG;
             btnExit.BorderBrush = BORDER_BG;
 
-
-            StartGame();
+            // create a new game
+            CreateNewGame();
         }
 
         // bunch of methods to start the game
-        private void StartGame()
+        private void CreateNewGame()
         {
+            // reset the global turn and peg numbers
+            current_turn = 1;
+            current_peg = 1;
+
             // build the board and pegs
             BuildTheBoard();
             // add the marker to show the next peg which will be populated
             AddNextMovemarker(current_turn, current_peg);
-
+            
             // generate a random solution
             SetSolution();
             // hide the solution
             this.solution.Visibility = Visibility.Collapsed;
-            // and set some more properties on the boardGrid
-            PlaneProjection pp = new PlaneProjection();
-            pp.RotationX = -10;
-            this.boardGrid.Projection = pp;
-            this.boardGrid.BorderBrush = BORDER_BG;
-            this.boardGrid.BorderThickness = new Thickness(20);
         }
 
         private void BuildTheBoard()
         {
-            // set the board background
-            this.boardGrid.Background = MAIN_BG;
+            // clear the board
+            this.boardGrid.Children.Clear();
 
             // add stackpanel to grid 1, 0 - colspan 2 - name it "spTurns"
             StackPanel spTurns = new StackPanel();
-            spTurns.SetValue(Grid.ColumnProperty, 1);
+            spTurns.SetValue(Grid.ColumnProperty, 0);
             spTurns.SetValue(Grid.RowProperty, 1);
-            spTurns.SetValue(Grid.ColumnSpanProperty, 1);
 
+            // add a button for debugging - check the solution
+            Button btn = new Button();
+            btn.Content = "Reveal";
+            this.boardGrid.Children.Add(btn);
+            // add its handler
+            btn.Tapped += btn_Tapped;
+            
             // create the solution peg container
             // TODO: don't add the solution yet as it may need to be loaded from AppData
             // so create the solution in method SetSolution()
             this.solution = new PegContainer(spTurns, 4);
-            Button btn = new Button();
-            btn.Content = "Reveal";
-            this.boardGrid.Children.Add(btn);
-            btn.Tapped += btn_Tapped;
-
             this.solution.Name = "solution";
             this.solution.Background = SECONDARY_BG;
-            this.solution.SetValue(Grid.ColumnProperty, 1);
+            this.solution.SetValue(Grid.ColumnProperty, 0);
             this.solution.SetValue(Grid.RowProperty, 0);
             this.solution.HorizontalAlignment = HorizontalAlignment.Right;
             // TODO: calculate total size of a turncontainer 
-            // and then set a left padding here
+            //  - (and then) set a left padding here
             this.solution.Padding = new Thickness(
                 60,
                 MainPage.PEG_CONTAINER_PADDING,
@@ -171,7 +180,9 @@ namespace UWP_Mastermind
             this.solution.BorderBrush = BORDER_BG;
             this.solution.BorderThickness = new Thickness(BORDER_THICKNESS);
             this.boardGrid.Children.Add(this.solution);
-
+            
+            // for each turn (numTurns), add a turn container to spTurns - decrementing loop
+            // add each turn container to the stackpanel
             // turn1 is at the bottom of the stack panel, so 
             // reverse the loop
             for (int i = NUM_TURNS; i >= 1; i--)
@@ -185,19 +196,17 @@ namespace UWP_Mastermind
             // build and add the control panel element, passing the 
             // current turn and peg values
             // add this to a stackpanel
-            StackPanel spControlPanelContainer = new StackPanel();
-            ControlPanel cp = new ControlPanel(this, current_turn, current_peg);
-            cp.Name = "colourPallette";
-            cp.Margin = new Thickness(5);
-            spControlPanelContainer.SetValue(Grid.ColumnProperty, 2);
-            spControlPanelContainer.SetValue(Grid.RowProperty, 1);
-            spControlPanelContainer.Children.Add(cp);
-            this.boardGrid.Children.Add(spControlPanelContainer);
-
-            // for each turn (numTurns), add a turn container to spTurns - decrementing loop
-            // add each turn container to the stackpanel
+            StackPanel spColourPaletteContainer = new StackPanel();
+            ColourPalette cpColourPalette = new ColourPalette(this, current_turn, current_peg);
+            cpColourPalette.Name = "colourPallette";
+            cpColourPalette.Margin = new Thickness(5);
+            spColourPaletteContainer.SetValue(Grid.ColumnProperty, 1);
+            spColourPaletteContainer.SetValue(Grid.RowProperty, 1);
+            spColourPaletteContainer.Children.Add(cpColourPalette);
+            this.boardGrid.Children.Add(spColourPaletteContainer);
         }
 
+        // handler for the 'reveal' button
         private void btn_Tapped(object sender, TappedRoutedEventArgs e)
         {
             if (this.solution.Visibility == Visibility.Collapsed)
@@ -231,14 +240,14 @@ namespace UWP_Mastermind
             PegContainer turnContainer = FindName("turn" + numTurn + "pegs") as PegContainer;
 
 
-            // add a triangle object in row 1, column numPeg -1 of the turn container
+            // add an ellipse object in row 1, column numPeg -1 of the turn container
             Ellipse nextMove = new Ellipse();
             nextMove.Name = "nextMoveMarker";
             nextMove.Height = 10;
             nextMove.Width = 10;
             nextMove.Fill = new SolidColorBrush(Colors.White);
 
-            nextMove.SetValue(Grid.RowProperty, 1);
+            nextMove.SetValue(Grid.RowProperty, 0);
             nextMove.SetValue(Grid.ColumnProperty, numPeg - 1);
 
             turnContainer.Children.Add(nextMove);
@@ -248,6 +257,9 @@ namespace UWP_Mastermind
         // generate a new solution and add it to the PegContainer solution object
         private void SetSolution()
         {
+
+            // first, reset the solutionList
+            this.solutionList = new List<Ellipse>();
             // TODO: do this a better way
             //this.solution.Width = TURN_CONTAINER_WIDTH;
             // for each number of pegs per turn,
@@ -372,7 +384,7 @@ namespace UWP_Mastermind
                 // Show the solution
             }
         }
-        
+
         // this method is called after each turn. it takes a parameter of a 
         // list of ellipses which have fills the same as the ones in the 
         // actual turn container, so as not to change the colours of the 
@@ -547,6 +559,11 @@ namespace UWP_Mastermind
                     ),
                 Stretch = Stretch.UniformToFill
             };
+        }
+
+        private void btnNewGame_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            CreateNewGame();
         }
     }
 }

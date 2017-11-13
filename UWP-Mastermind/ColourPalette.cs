@@ -15,13 +15,13 @@ namespace UWP_Mastermind
     // this class will control the majority of the game logic
     // its constructor takes the current_turn and current_peg as 
     // parameters, which are used to set the starting turn
-    public class ControlPanel : Grid
+    public class ColourPalette : Grid
     {
         // reference to the MainPage, which is used for 
         // accessing the game methods
         MainPage _mainPage;
 
-        public ControlPanel(MainPage mainPage, int current_turn, int current_peg)
+        public ColourPalette(MainPage mainPage, int current_turn, int current_peg)
         {
             this._mainPage = mainPage;
 
