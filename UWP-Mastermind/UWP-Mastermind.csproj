@@ -95,14 +95,12 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="BrushWrapper.cs" />
     <Compile Include="ColourPalette.cs" />
     <Compile Include="FeedbackContainer.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="PegContainer.cs" />
-    <Compile Include="PegLocationWrapper.cs" />
     <Compile Include="PegWrapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TurnContainer.cs" />
