@@ -35,13 +35,6 @@ namespace UWP_Mastermind
         // the list of colours used in the control panel
         public static List<SolidColorBrush> _colorList = new List<SolidColorBrush>();
 
-        /// <summary>
-        /// //
-        //
-        /// </summary>
-        /// 
-
-
         // CONSTANTS
 
         // Number of pegs per turn, per feedback container and 
@@ -136,7 +129,7 @@ namespace UWP_Mastermind
             BuildTheBoard();
             // add the marker to show the next peg which will be populated
             AddNextMovemarker(current_turn, current_peg);
-            
+
             // generate a random solution
             SetSolution();
             // hide the solution
@@ -159,7 +152,7 @@ namespace UWP_Mastermind
             this.boardGrid.Children.Add(btn);
             // add its handler
             btn.Tapped += btn_Tapped;
-            
+
             // create the solution peg container
             // TODO: don't add the solution yet as it may need to be loaded from AppData
             // so create the solution in method SetSolution()
@@ -180,7 +173,7 @@ namespace UWP_Mastermind
             this.solution.BorderBrush = BORDER_BG;
             this.solution.BorderThickness = new Thickness(BORDER_THICKNESS);
             this.boardGrid.Children.Add(this.solution);
-            
+
             // for each turn (numTurns), add a turn container to spTurns - decrementing loop
             // add each turn container to the stackpanel
             // turn1 is at the bottom of the stack panel, so 
@@ -407,7 +400,6 @@ namespace UWP_Mastermind
                 });
             }
 
-
             // use this to keep track of which location to add the next peg
             // to the feedback container
             int pegToAdd = 1;
@@ -564,6 +556,29 @@ namespace UWP_Mastermind
         private void btnNewGame_Tapped(object sender, TappedRoutedEventArgs e)
         {
             CreateNewGame();
+        }
+
+
+        private void SaveGameData()
+        {
+            Ellipse el;
+            int ellipseCount = 0;
+            for (int i = 1; i <= NUM_TURNS; i++)
+            {
+                for (int j = 1; i <= NUM_PEGS_PER_TURN; j++)
+                {
+                    // each turn peg will be called turn[i]peg[j]
+                    el = FindName("turn" + i + "peg" + j) as Ellipse;
+                    ellipseCount++;
+                }
+            }
+            Debug.WriteLine(ellipseCount);
+
+        }
+
+        private void btnSaveGame_Tapped(object sender, TappedRoutedEventArgs e)
+        {
+            SaveGameData();
         }
     }
 }
